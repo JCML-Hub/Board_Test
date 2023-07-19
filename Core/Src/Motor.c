@@ -7,7 +7,7 @@
 #include "Motor.h"
 
 _Motor _motor;
-short motorA,MotorB;
+short motorA,motorB;
 
 /***********************************************************
 *@名称 :Motor_Init
@@ -94,14 +94,14 @@ void Control_D(int32_t Speed) {
 void GetSpeed(_Motor *speed)
 {
   speed->M1_ActualSpeed = -(float )motorA;
-  speed->M2_ActualSpeed = (float )motorA;//获取当前轮子的速度,此处直接将速度转为float型，可在后面加上滤波
+  speed->M2_ActualSpeed = (float )motorB;//获取当前轮子的速度,此处直接将速度转为float型，可在后面加上滤波
 }
 
 
 void Encode_CallBack(void)
 {
   motorA = ((short)__HAL_TIM_GET_COUNTER(&Encoder_Timer1));//读取M1的旋转次数,此处取的是霍尔编码器一周计数加一
-  MotorB = ((short)__HAL_TIM_GET_COUNTER(&Encoder_Timer2));//读取M2的旋转次数
+  motorB = ((short)__HAL_TIM_GET_COUNTER(&Encoder_Timer2));//读取M2的旋转次数
   __HAL_TIM_SET_COUNTER(&Encoder_Timer1, 0);
   __HAL_TIM_SET_COUNTER(&Encoder_Timer2, 0);//将两个计数器清零
 }

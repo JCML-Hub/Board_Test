@@ -119,7 +119,7 @@ USART1_Init();
   {
     Encode_CallBack();
     GetSpeed(&motor0);
-    Myprintf("%f\r\n",motor0.M1_ActualSpeed);
+    Myprintf("%.3f,%.3f\r\n",motor0.M1_ActualSpeed,motor0.M2_ActualSpeed);
     HAL_Delay(200);
 //    int num=GetKeyNum();
 //    if (num)
