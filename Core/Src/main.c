@@ -76,6 +76,8 @@ int main(void)
   uint8_t dir=1;
   _Motor motor0;
   short cnt=0;
+  int temp,temp2;
+  uint32_t count1=0,count2=0;
   /* USER CODE END 1 */
 
   /* MCU Configuration--------------------------------------------------------*/
@@ -104,52 +106,41 @@ int main(void)
   MX_TIM3_Init();
   MX_TIM6_Init();
   /* USER CODE BEGIN 2 */
-//  OLED_Init();
-USART1_Init();
+  OLED_Init();
+  USART1_Init();
   Motor_Init();
-//  HAL_TIM_Encoder_Start(&htim2,TIM_CHANNEL_ALL);
-  Myprintf("Hello!\r\n");
-//  Control_A(100);
-//  Control_B(-100);
+  OLED_ShowString(0,0,"Test!",16);
+//  Myprintf("Hello!\r\n");
   /* USER CODE END 2 */
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
   while (1)
   {
+    if (GetRxFlag()==1)
+    {
+      sscanf(RxDataStr,"L:%d,R:%d",&temp,&temp2);
+      Control_A(temp);
+      Control_B(temp2);
+      OLED_ShowSignedNum(0,6,temp,4,16);
+      OLED_ShowSignedNum(64,6,temp2,4,16);
+    }
     Encode_CallBack();
     GetSpeed(&motor0);
-    Myprintf("%.3f,%.3f\r\n",motor0.M1_ActualSpeed,motor0.M2_ActualSpeed);
+    OLED_ShowSignedNum(0,2,(int )motor0.M1_ActualSpeed,6,16);
+    OLED_ShowSignedNum(0,4,(int )motor0.M2_ActualSpeed,6,16);
     HAL_Delay(200);
-//    int num=GetKeyNum();
-//    if (num)
-//    {
-//      HAL_GPIO_TogglePin(LED1_GPIO_Port,LED1_Pin);
-//      HAL_GPIO_TogglePin(LED2_GPIO_Port,LED2_Pin);
-//      HAL_GPIO_TogglePin(BEEP_GPIO_Port,BEEP_Pin);
-//      num=0;
-//    }
-//      while (pwmVal< 500)
-//      {
-//        pwmVal++;
-//                __HAL_TIM_SetCompare(&htim8, TIM_CHANNEL_1, pwmVal);    //修改比较值，修改占空比
-//                __HAL_TIM_SetCompare(&htim8, TIM_CHANNEL_2, pwmVal);    //修改比较值，修改占空比
-//                __HAL_TIM_SetCompare(&htim8, TIM_CHANNEL_3, pwmVal);    //修改比较值，修改占空比
-//                __HAL_TIM_SetCompare(&htim8, TIM_CHANNEL_4, pwmVal);    //修改比较值，修改占空比
-////		  TIM3->CCR1 = pwmVal;    与上方相同
-//        HAL_Delay(1);
-//      }
-//      while (pwmVal)
-//      {
-//        pwmVal--;
-//        __HAL_TIM_SetCompare(&htim8, TIM_CHANNEL_1, pwmVal);    //修改比较值，修改占空比
-//        __HAL_TIM_SetCompare(&htim8, TIM_CHANNEL_2, pwmVal);    //修改比较值，修改占空比
-//        __HAL_TIM_SetCompare(&htim8, TIM_CHANNEL_3, pwmVal);    //修改比较值，修改占空比
-//        __HAL_TIM_SetCompare(&htim8, TIM_CHANNEL_4, pwmVal);    //修改比较值，修改占空比
-////		  TIM3->CCR1 = pwmVal;     与上方相同
-//        HAL_Delay(1);
-//      }
-//      HAL_Delay(200);
+    if (motor0.M1_ActualSpeed>=10000)
+    {
+      __HAL_TIM_SET_COUNTER(&Encoder_Timer1, 0);
+      count1++;
+    }
+    if (motor0.M1_ActualSpeed>=10000)
+    {
+      __HAL_TIM_SET_COUNTER(&Encoder_Timer2, 0);
+      count2++;
+    }
+    Myprintf("%f,%f,%d,%d\n",motor0.M1_ActualSpeed,motor0.M2_ActualSpeed,count1,count2);
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */

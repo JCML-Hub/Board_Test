@@ -28,7 +28,8 @@
 #include "stm32f1xx_it.h"
 
 
-uint8_t USART1_TX_BUF[MAX_TX_LEN];   // my_printf的发送缓冲，下文详述其作用。
+uint8_t USART1_TX_BUF[MAX_TX_LEN];   // my_printf的发送缓冲，下文详述其作用。组
+int USART2_RxLine=0;           //接收到的数据长度
 volatile uint8_t USART1_TX_FLAG = 0; // USART发送标志，启动发送时置1，加volatile防编译器优化
 uint8_t u1rxbuf[MAX_RX_LEN];         // 数据接收缓冲1
 uint8_t u2rxbuf[MAX_RX_LEN];         // 数据接收缓冲2
@@ -56,10 +57,8 @@ void USART1_Init(void)
 {
   // 开启串口1空闲中断
   __HAL_UART_ENABLE_IT(&huart1, UART_IT_IDLE);
-
   // 开启DMA发送通道的发送完成中断，才能实现封装发送函数里面的等待功能
   __HAL_DMA_ENABLE_IT(&hdma_usart1_tx, DMA_IT_TC);
-
   // 清除空闲标志位，防止中断误入
   __HAL_UART_CLEAR_IDLEFLAG(&huart1);
 

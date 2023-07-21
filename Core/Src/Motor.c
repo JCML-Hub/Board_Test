@@ -102,8 +102,8 @@ void Encode_CallBack(void)
 {
   motorA = ((short)__HAL_TIM_GET_COUNTER(&Encoder_Timer1));//读取M1的旋转次数,此处取的是霍尔编码器一周计数加一
   motorB = ((short)__HAL_TIM_GET_COUNTER(&Encoder_Timer2));//读取M2的旋转次数
-  __HAL_TIM_SET_COUNTER(&Encoder_Timer1, 0);
-  __HAL_TIM_SET_COUNTER(&Encoder_Timer2, 0);//将两个计数器清零
+//  __HAL_TIM_SET_COUNTER(&Encoder_Timer1, 0);
+//  __HAL_TIM_SET_COUNTER(&Encoder_Timer2, 0);//将两个计数器清零
 }
 /***********************************************************
 *@名称 :HAL_TIM_PeriodElapsedCallback
