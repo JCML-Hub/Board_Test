@@ -1,7 +1,8 @@
-#ifndef __IOI2C_H
-#define __IOI2C_H
+#ifndef __ST_I2C_H
+#define __ST_I2C_H
 #include "stm32f1xx_hal.h"
 #include "main.h"
+#include "stm32f1xx_hal_gpio.h"
 #ifdef __cplusplus
  extern "C" {
 #endif
@@ -19,6 +20,22 @@
 
 #define SDA_H         HAL_GPIO_WritePin(IIC_SDA_GPIO_Port,IIC_SDA_Pin,GPIO_PIN_SET)
 #define SDA_L         HAL_GPIO_WritePin(IIC_SDA_GPIO_Port,IIC_SDA_Pin,GPIO_PIN_RESET)
+#define I2C_X_GPIO       	GPIOB
+#define	I2C_PIN_X0       	IIC1_Pin
+#define I2C_X0_HIGH()       HAL_GPIO_WritePin(I2C_X_GPIO,I2C_PIN_X0,GPIO_PIN_SET) 
+#define I2C_X0_LOW()  	    HAL_GPIO_WritePin(I2C_X_GPIO,I2C_PIN_X0,GPIO_PIN_RESET)
+
+#define	I2C_PIN_X1       	IIC2_Pin
+#define I2C_X1_HIGH()       HAL_GPIO_WritePin(I2C_X_GPIO,I2C_PIN_X1,GPIO_PIN_SET) 
+#define I2C_X1_LOW()  	    HAL_GPIO_WritePin(I2C_X_GPIO,I2C_PIN_X1,GPIO_PIN_RESET)
+
+#define	I2C_PIN_X2       	IIC3_Pin
+#define I2C_X2_HIGH()       HAL_GPIO_WritePin(I2C_X_GPIO,I2C_PIN_X2,GPIO_PIN_SET) 
+#define I2C_X2_LOW()  	    HAL_GPIO_WritePin(I2C_X_GPIO,I2C_PIN_X2,GPIO_PIN_RESET)
+
+#define	I2C_PIN_X3       	IIC4_Pin
+#define I2C_X3_HIGH()       HAL_GPIO_WritePin(I2C_X_GPIO,I2C_PIN_X3,GPIO_PIN_SET) 
+#define I2C_X3_LOW()  	    HAL_GPIO_WritePin(I2C_X_GPIO,I2C_PIN_X3,GPIO_PIN_RESET)
 
 #define SCL_read      HAL_GPIO_ReadPin(IIC_SCL_GPIO_Port,IIC_SCL_Pin)
 #define SDA_read      HAL_GPIO_ReadPin(IIC_SDA_GPIO_Port,IIC_SDA_Pin)

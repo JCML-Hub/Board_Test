@@ -30,27 +30,41 @@
 #include "Key.h"
 #include "OLED.h"
 #include "Motor.h"
+#include "mpu6050.h"
+#include "inv_mpu.h"
+#include "vl53l0x_api.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
 /* USER CODE BEGIN PTD */
-
+VL53L0X_Dev_t dev1,dev2,dev3;
 /* USER CODE END PTD */
 
 /* Private define ------------------------------------------------------------*/
-/* USER CODE BEGIN PD */
-
+/* USER CODE BEGIN PD *
+ *
 /* USER CODE END PD */
 
 /* Private macro -------------------------------------------------------------*/
 /* USER CODE BEGIN PM */
 
+extern VL53L0X_Error vl53l0x_init(void);
+extern uint16_t VL53L0X_GetValue(int ch);
 /* USER CODE END PM */
 
 /* Private variables ---------------------------------------------------------*/
 
 /* USER CODE BEGIN PV */
-
+short gyrox, gyroy, gyroz;//陀螺仪原始数据
+float pitch,roll,yaw;
+void Updata(void)
+{
+  mpu_dmp_get_data(&pitch, &roll, &yaw);
+//	MPU_Get_Accelerometer(&aacx, &aacy, &aacz);
+  MPU_Get_Gyroscope(&gyrox, &gyroy, &gyroz);
+//	BalanG = KalmanFilter(&kfp,-gyroy);
+  Myprintf("%f,%f,%f\r\n", pitch,roll, yaw);
+}
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -76,7 +90,7 @@ int main(void)
   uint8_t dir=1;
   _Motor motor0;
   short cnt=0;
-  int temp,temp2;
+  int temp,temp2,temp3;
   uint32_t count1=0,count2=0;
   /* USER CODE END 1 */
 
@@ -109,6 +123,10 @@ int main(void)
   OLED_Init();
   USART1_Init();
   Motor_Init();
+
+  vl53l0x_init();
+//  MPU_Init();
+//  mpu_dmp_init();		//dmp初始化
   OLED_ShowString(0,0,"Test!",16);
 //  Myprintf("Hello!\r\n");
   /* USER CODE END 2 */
@@ -117,30 +135,38 @@ int main(void)
   /* USER CODE BEGIN WHILE */
   while (1)
   {
-    if (GetRxFlag()==1)
-    {
-      sscanf(RxDataStr,"L:%d,R:%d",&temp,&temp2);
-      Control_A(temp);
-      Control_B(temp2);
-      OLED_ShowSignedNum(0,6,temp,4,16);
-      OLED_ShowSignedNum(64,6,temp2,4,16);
-    }
-    Encode_CallBack();
-    GetSpeed(&motor0);
-    OLED_ShowSignedNum(0,2,(int )motor0.M1_ActualSpeed,6,16);
-    OLED_ShowSignedNum(0,4,(int )motor0.M2_ActualSpeed,6,16);
-    HAL_Delay(200);
-    if (motor0.M1_ActualSpeed>=10000)
-    {
-      __HAL_TIM_SET_COUNTER(&Encoder_Timer1, 0);
-      count1++;
-    }
-    if (motor0.M1_ActualSpeed>=10000)
-    {
-      __HAL_TIM_SET_COUNTER(&Encoder_Timer2, 0);
-      count2++;
-    }
-    Myprintf("%f,%f,%d,%d\n",motor0.M1_ActualSpeed,motor0.M2_ActualSpeed,count1,count2);
+//    Updata();
+    temp=VL53L0X_GetValue(0);
+    temp2=VL53L0X_GetValue(1);
+    temp3=VL53L0X_GetValue(2);
+    HAL_Delay(50);
+    OLED_ShowNum(0,2,temp,6,16);
+    OLED_ShowNum(0,4,temp2,6,16);
+    OLED_ShowNum(0,6,temp3,6,16);
+//    if (GetRxFlag()==1)
+//    {
+//      sscanf(RxDataStr,"L:%d,R:%d",&temp,&temp2);
+//      Control_A(temp);
+//      Control_B(temp2);
+//      OLED_ShowSignedNum(0,6,temp,4,16);
+//      OLED_ShowSignedNum(64,6,temp2,4,16);
+//    }
+//    Encode_CallBack();
+//    GetSpeed(&motor0);
+//    OLED_ShowSignedNum(0,2,(int )motor0.M1_ActualSpeed,6,16);
+//    OLED_ShowSignedNum(0,4,(int )motor0.M2_ActualSpeed,6,16);
+//    HAL_Delay(200);
+//    if (motor0.M1_ActualSpeed>=10000)
+//    {
+//      __HAL_TIM_SET_COUNTER(&Encoder_Timer1, 0);
+//      count1++;
+//    }
+//    if (motor0.M1_ActualSpeed>=10000)
+//    {
+//      __HAL_TIM_SET_COUNTER(&Encoder_Timer2, 0);
+//      count2++;
+//    }
+//    Myprintf("%f,%f,%d,%d\n",motor0.M1_ActualSpeed,motor0.M2_ActualSpeed,count1,count2);
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
@@ -188,6 +214,10 @@ void SystemClock_Config(void)
 }
 
 /* USER CODE BEGIN 4 */
+void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
+{
+//		Updata();
+}
 
 /* USER CODE END 4 */
 
