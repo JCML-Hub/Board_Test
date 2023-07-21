@@ -7,7 +7,7 @@
 *       WMD 
 * @par 日志
 */  
-#include "delay.h"
+//#include "delay.h"
 #include "ST_I2C.h"
 #include "vl53l0x_api.h"
 //#include "cmsis_os.h"
@@ -74,7 +74,7 @@ VL53L0X_Error VL53L0X_UpdateByte(VL53L0X_DEV Dev, uint8_t index, uint8_t AndData
 //!该函数是等待用函数 要改成对应环境的Delay
 VL53L0X_Error VL53L0X_PollingDelay(VL53L0X_DEV Dev)
 {
-	delay_ms(5);
+    HAL_Delay(5);
 	return 0;
 }
             /** @} */

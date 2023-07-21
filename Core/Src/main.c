@@ -33,23 +33,29 @@
 #include "mpu6050.h"
 #include "inv_mpu.h"
 #include "vl53l0x_api.h"
+#include "PID.h"
+#include "Control.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
 /* USER CODE BEGIN PTD */
+int speedLeft,speedRight;
+PID pid;
+uint64_t status;
+int distanceLeft, distanceRight, distanceFront;
 VL53L0X_Dev_t dev1,dev2,dev3;
 /* USER CODE END PTD */
 
 /* Private define ------------------------------------------------------------*/
-/* USER CODE BEGIN PD *
- *
+/* USER CODE BEGIN PD */
+
 /* USER CODE END PD */
 
 /* Private macro -------------------------------------------------------------*/
 /* USER CODE BEGIN PM */
 
-extern VL53L0X_Error vl53l0x_init(void);
-extern uint16_t VL53L0X_GetValue(int ch);
+ VL53L0X_Error vl53l0x_init(void);
+ uint16_t VL53L0X_GetValue(int ch);
 /* USER CODE END PM */
 
 /* Private variables ---------------------------------------------------------*/
@@ -123,6 +129,7 @@ int main(void)
   OLED_Init();
   USART1_Init();
   Motor_Init();
+  setup();
 
   vl53l0x_init();
 //  MPU_Init();
@@ -170,6 +177,7 @@ int main(void)
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
+    update();
   }
   /* USER CODE END 3 */
 }
